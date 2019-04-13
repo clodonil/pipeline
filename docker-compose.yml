@@ -1,0 +1,23 @@
+version: '3'
+services:
+  repository:
+    image: sonatype/nexus3
+    ports:
+      - 8081:8081
+  sonarqube:
+    image: sonarqube
+    ports:
+      - 9000:9000      
+  jenkins:
+    image: jenkins/jenkins:lts
+    ports:
+      - 8080:8080
+    links:
+      - repository
+      - sonarqube
+    volumes:
+      - 'jenkins_data:/jenkins_config'
+  
+volumes:
+  jenkins_data:
+    driver: local
