@@ -1,47 +1,81 @@
+
 @Library('shared')_
+
 pipeline {
   agent any
-  environment {
-    //Variaveis
-    variable
-  }
   stages {
     stage('Checkout') { 
       steps {
           // Stage de clone do projeto
-          checkout
-      }
+          echo "Checkout"
+          git  branch: "master",
+               url: 'https://github.com/clodonil/accountability.git', 
+               credentialsId: "GitHub"
+       }
     }  
     stage('TestUnit') { 
       steps {
         // Stage para executar test unit 
-        testunit
+        echo "testunit"
       }
     }
 
     stage('Analysis Sec') { 
       steps {
         // Stage para analise de segurança do código 
-        security
+        echo "security"
       }
     }
     stage('Analysis QA') { 
       steps {
         // Stage para analise de qualidade do código
-        qa
+        sh """
+           sonar-scanner   -Dsonar.projectKey=accountability   -Dsonar.sources=.   -Dsonar.host.url=http://sonarqube:9000   -Dsonar.login=${SonarToken}
+           """
+
       }
     }
     stage('Build') { 
       steps {
         // Build do código
-        build
+        echo "build"
+        sh """
+           docker build -t clodonil/accountability:${BUILD_ID} .
+        """
       }
     }
+    stage('DAST IMAGE') { 
+      steps {
+        // Build do código
+        echo "build"
+        sh """
+          docker images
+        """
+      }
+    }
+    
     stage('Publish') { 
       steps {
         // Publicar o build em repositório 
-        publish
+        echo "publish"
+        sh """
+             docker login -u clodonil -p xxxx
+             docker tag clodonil/accountability:${BUILD_ID} clodonil/accountability:latest
+             docker push clodonil/accountability:${BUILD_ID}
+             docker push clodonil/accountability:latest
+
+           """
       }
     }
+    stage('Deploy') { 
+      steps {
+        // Publicar o build em repositório 
+        echo "Deploy"
+        sh """
+             echo 'Deploy'
+           """
+      }
+    }
+    
   }
 }
