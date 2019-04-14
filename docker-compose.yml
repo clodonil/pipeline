@@ -12,11 +12,13 @@ services:
     image: jenkins/jenkins:lts
     ports:
       - 8080:8080
+      - 50000:50000
     links:
       - repository
       - sonarqube
     volumes:
       - 'jenkins_data:/jenkins_config'
+      - /var/run/docker.sock:/var/run/docker.sock
   
 volumes:
   jenkins_data:
