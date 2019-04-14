@@ -3,6 +3,6 @@
 
 def call(){
    echo "Checkout"
-   git branch: 'master', url: 'https://github.com/clodonil/accountability.git'
+   git url: 'https://github.com/clodonil/accountability.git'
 
 }
