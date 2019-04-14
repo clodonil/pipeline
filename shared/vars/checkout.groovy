@@ -3,6 +3,6 @@
 
 def call(){
    echo "Checkout"
-   git url: 'http://gitlab/root/appdemo.git'
+   git branch: 'master', url: 'https://github.com/clodonil/accountability.git'
 
 }
